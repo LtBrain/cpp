@@ -1,0 +1,3 @@
+/workspaces/cpp/Brightfield/Brightfield/build/CMakeFiles/brightfield.dir
+/workspaces/cpp/Brightfield/Brightfield/build/CMakeFiles/edit_cache.dir
+/workspaces/cpp/Brightfield/Brightfield/build/CMakeFiles/rebuild_cache.dir
