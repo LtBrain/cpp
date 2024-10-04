@@ -53,8 +53,14 @@ std::vector<Token> tokenize(const std::string& str) {
             tokens.push_back({.type = TokenType::int_lit, .value = buf});
             buf.clear();
         }
+        else if (c == ';') {
+            tokens.push_back({.type = TokenType::semi});
+        }
         else if (std::isspace(c)) {
             continue;
+        } else {
+            std::cerr << "Uh Oh, Something's Wrong!" << std::endl;
+            exit(EXIT_FAILURE);
         }
     }
 }
