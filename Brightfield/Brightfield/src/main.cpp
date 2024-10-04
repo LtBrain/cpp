@@ -1,7 +1,9 @@
 #include <cctype>
+#include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <optional>
+#include <ostream>
 #include <sstream>
 #include <vector>
 
@@ -17,9 +19,9 @@ struct Token {
 };
 
 std::vector<Token> tokenize(const std::string& str) {
-    std::vector<Token> tokens {};
+    std::vector<Token> tokens;
 
-    std::string buf = "";
+    std::string buf;
     for (int i = 0; i < str.length(); i++) {
         char c = str.at(i);
         if (std::isalpha(c)) {
@@ -33,7 +35,26 @@ std::vector<Token> tokenize(const std::string& str) {
 
             if (buf == "return") {
                 tokens.push_back({.type = TokenType::_return});
+                buf.clear();
+                continue;
+            } else {
+                std::cerr << "Uh Oh, Something's Wrong!" << std::endl;
+                exit(EXIT_FAILURE);
             }
+        }
+        else if (std::isdigit(c)) {
+            buf.push_back(c);
+            i++;
+            while (std::isdigit(str.at(c))) {
+                buf.push_back(str.at(c));
+                i++;
+            }
+            i--;
+            tokens.push_back({.type = TokenType::int_lit, .value = buf});
+            buf.clear();
+        }
+        else if (std::isspace(c)) {
+            continue;
         }
     }
 }
