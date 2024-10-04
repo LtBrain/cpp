@@ -1,4 +1,4 @@
-This is an example C++ project used in Codeanywhere.
+This is an random programming language that I am trying to make. (IDK what is happening)
 
 [Try it out](https://app.codeanywhere.com/#https://github.com/Codeanywhere-Templates/cpp)
 
@@ -6,10 +6,9 @@ This is an example C++ project used in Codeanywhere.
 
 Open the terminal and run:
 ```sh
-cd test-project
+cd Brightfield
 g++ main.cpp -o main && ./main
 ```
-Or just press the *Run Code* button found in the top right of the editor panel.
 ### Want to contribute?
 
 Feel free to [open a PR](https://github.com/Codeanywhere-Templates/cpp) with any suggestions for this test project 😃 
