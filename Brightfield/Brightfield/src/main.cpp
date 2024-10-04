@@ -13,11 +13,13 @@ enum class TokenType {
 
 struct Token {
     TokenType type;
-    std::optional<std::string> value;
+    std::optional<std::string> value {};
 };
 
 std::vector<Token> tokenize(const std::string& str) {
-    std::vector<char> buf{};
+    std::vector<Token> tokens {};
+
+    std::string buf = "";
     for (int i = 0; i < str.length(); i++) {
         char c = str.at(i);
         if (std::isalpha(c)) {
@@ -25,6 +27,12 @@ std::vector<Token> tokenize(const std::string& str) {
             i++;
             while (std::isalnum(str.at(i))) {
                 buf.push_back(str.at(i));
+                i++;
+            }
+            i--;
+
+            if (buf == "return") {
+                tokens.push_back({.type = TokenType::_return});
             }
         }
     }
