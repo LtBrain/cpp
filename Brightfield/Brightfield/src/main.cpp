@@ -1,6 +1,7 @@
 #include <cctype>
 #include <cstdlib>
 #include <fstream>
+#include <ios>
 #include <iostream>
 #include <optional>
 #include <ostream>
@@ -43,7 +44,7 @@ std::vector<Token> tokenize(const std::string& str) {
             }
         }
         else if (std::isdigit(c)) {
-            buf.push_back(i);
+            buf.push_back(c);
             i++;
             while (std::isdigit(str.at(i))) {
                 buf.push_back(str.at(i));
@@ -69,14 +70,14 @@ std::vector<Token> tokenize(const std::string& str) {
 
 std::string tokens_to_asm(const std::vector<Token>& tokens) {
     std::stringstream output;
-    output << "global _start\nstart:\n";
+    output << "global _start\n_start:\n";
     for(int i = 0; i < tokens.size(); i++) {
         const Token& token = tokens.at(i);
         if (token.type == TokenType::_return) {
             if (i + 1 < tokens.size() && tokens.at(i + 1).type == TokenType::int_lit) {
                 if(i + 2 < tokens.size() && tokens.at(i + 2).type == TokenType::semi) {
                     output << "    mov rax, 60\n";
-                    output << "    mov rdi, " << tokens.at(i + 1).value.value() << "\n";
+                    output << "    mov rdi, " << tokens.at(i + 1).value.value() << "\n"; 
                     output << "    syscall";
                 }
             }
@@ -103,6 +104,14 @@ int main(int argc, char* argv[])
 
     std::vector<Token> tokens = tokenize(contents);
     std::cout << tokens_to_asm(tokens) << std::endl;
+
+    {
+        std::fstream file("output.asm", std::ios::out);
+        file << tokens_to_asm(tokens);
+    }
+
+    system("nasm -felf64 output.asm");
+    system("ld -o out output.o");
 
     return EXIT_SUCCESS;
 }
