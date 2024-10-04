@@ -1,8 +1,34 @@
+#include <cctype>
 #include <fstream>
 #include <iostream>
 #include <optional>
 #include <sstream>
 #include <vector>
+
+enum class TokenType {
+    _return,
+    int_lit,
+    semi
+};
+
+struct Token {
+    TokenType type;
+    std::optional<std::string> value;
+};
+
+std::vector<Token> tokenize(const std::string& str) {
+    std::vector<char> buf{};
+    for (int i = 0; i < str.length(); i++) {
+        char c = str.at(i);
+        if (std::isalpha(c)) {
+            buf.push_back(c);
+            i++;
+            while (std::isalnum(str.at(i))) {
+                buf.push_back(str.at(i));
+            }
+        }
+    }
+}
 
 int main(int argc, char* argv[])
 {
@@ -19,4 +45,8 @@ int main(int argc, char* argv[])
         contents_stream << input.rdbuf();
         contents = contents_stream.str();
     }
+
+    std::vector<Token> thing = tokenize(contents);
+
+    std::cout << contents <<std::endl;
 }
