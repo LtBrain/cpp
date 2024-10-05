@@ -5,18 +5,18 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <stdexcept>
 
-enum class TokenType { exit, int_lit, semi };
+enum class TokenType { exit, int_lit, semi, eof };
 
 struct Token {
     TokenType type;
     std::optional<std::string> value {};
 };
 
-
 class Tokenizer {
 public:
-    inline explicit Tokenizer(const std::string& src)
+    inline explicit Tokenizer(std::string src)
         : m_src (std::move(src))
     {
     }
@@ -25,6 +25,7 @@ public:
     {
         std::vector<Token> tokens;
         std::string buf;
+
         while(peak().has_value()) {
             if (std::isalpha(peak().value())) {
                 buf.push_back(consume());
@@ -36,8 +37,7 @@ public:
                     buf.clear();
                     continue;
                 } else {
-                    std::cerr << "Uh Oh, Something's Wrong!" << std::endl;
-                    exit(EXIT_FAILURE);
+                    throw std::runtime_error("Unexpected token: " + buf);
                 }
             }
             else if (std::isdigit(peak().value())) {
@@ -51,23 +51,28 @@ public:
             }
             else if (peak().value() == ';') {
                 tokens.push_back({.type = TokenType::semi});
+                consume();  // Consume the semicolon
                 continue;
             }
             else if (std::isspace(peak().value())) {
+                consume();  // Consume the whitespace
                 continue;
             } else {
-                std::cerr << "Uh Oh, Something's Wrong!" << std::endl;
-                exit(EXIT_FAILURE);
+                throw std::runtime_error("Unexpected character: " + std::string(1, peak().value()));
             }
         }
+
+        // Add an EOF token at the end
+        tokens.push_back({.type = TokenType::eof});
+
         m_index = 0;
         return tokens;
     }
 
 private:
-    [[nodiscard]] std::optional<char> peak(int ahead = 1) const 
+    [[nodiscard]] std::optional<char> peak() const 
     {
-        if (m_index + ahead >= m_src.length()) {
+        if (m_index >= m_src.length()) {
             return {};
         } else {
             return m_src.at(m_index);
@@ -75,8 +80,10 @@ private:
     }
 
     char consume() {
+        if (m_index >= m_src.length()) {
+            throw std::out_of_range("Consume called on empty source");
+        }
         return m_src.at(m_index++);
-
     }
 
     const std::string m_src;
