@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cctype>
 #include <cstdlib>
 #include <fstream>
@@ -9,11 +10,6 @@
 #include <vector>
 
 #include "./tokenization.hpp"
-
-
-std::vector<Token> tokenize(const std::string& str) {
- 
-}
 
 std::string tokens_to_asm(const std::vector<Token>& tokens) {
     std::stringstream output;
@@ -48,10 +44,9 @@ int main(int argc, char* argv[])
         contents_stream << input.rdbuf();
         contents = contents_stream.str();
     }
-
-    std::vector<Token> tokens = tokenize(contents);
-    std::cout << tokens_to_asm(tokens) << std::endl;
-
+    
+    Tokenizer tokenizer(std::move(contents));
+    std::vector<Token> tokens = tokenizer.tokenize();
     {
         std::fstream file("output.asm", std::ios::out);
         file << tokens_to_asm(tokens);

@@ -16,10 +16,9 @@ struct Token {
 
 class Tokenizer {
 public:
-    inline Tokenizer(std::string& src)
+    inline explicit Tokenizer(std::string& src)
         : m_src (std::move(src))
     {
-
     }
 
     inline std::vector<Token> tokenize() 
@@ -43,29 +42,26 @@ public:
             }
             else if (std::isdigit(peak().value())) {
                 buf.push_back(consume());
-                while (peak().has_value() && std::isdigit(peak().value()))
+                while (peak().has_value() && std::isdigit(peak().value())) {
                     buf.push_back(consume());
+                }
+                tokens.push_back({.type = TokenType::int_lit, .value = buf});
+                buf.clear();
+                continue;
             }
-            tokens.push_back({.type = TokenType::int_lit, .value = buf});
-            buf.clear();
+            else if (peak().value() == ';') {
+                tokens.push_back({.type = TokenType::semi});
+                continue;
+            }
+            else if (std::isspace(peak().value())) {
+                continue;
+            } else {
+                std::cerr << "Uh Oh, Something's Wrong!" << std::endl;
+                exit(EXIT_FAILURE);
+            }
         }
-    
-
-
-
-        //     }
-        //     else if (c == ';') {
-        //         tokens.push_back({.type = TokenType::semi});
-        //     }
-        //     else if (std::isspace(c)) {
-        //         continue;
-        //     } else {
-        //         std::cerr << "Uh Oh, Something's Wrong!" << std::endl;
-        //         exit(EXIT_FAILURE);
-        //     }
-        // }
-
-        // return tokens;
+        m_index = 0;
+        return tokens;
     }
 
 private:
@@ -84,5 +80,5 @@ private:
     }
 
     const std::string m_src;
-    int m_index;
+    int m_index = 0;
 };
