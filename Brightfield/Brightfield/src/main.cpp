@@ -37,6 +37,16 @@ int main(int argc, char* argv[]) {
     Tokenizer tokenizer(std::move(contents));
     std::vector<Token> tokens = tokenizer.tokenize();
 
+    Parser parser(std::move(tokens));
+    std::optional<NodeExit> tree = parser.parse();
+
+    if (!tree.has_value()) {
+        std::cerr << "No Exit Statement Found" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
+    Generator generator(tree.value());
+
     // Generate the assembly code
     std::string asm_code = tokens_to_asm(tokens);
     std::cout << "Generated Assembly Code:\n" << asm_code << std::endl;
@@ -44,11 +54,7 @@ int main(int argc, char* argv[]) {
     // Write the assembly code to output.asm
     {
         std::fstream file("output.asm", std::ios::out);
-        if (!file.is_open()) {
-            std::cerr << "Failed to open output.asm for writing!" << std::endl;
-            return EXIT_FAILURE;
-        }
-        file << asm_code;
+        file << generator.generate();
     }
 
     // Assemble with NASM

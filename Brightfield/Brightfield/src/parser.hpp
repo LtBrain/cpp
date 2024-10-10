@@ -43,7 +43,9 @@ public:
                     std::cerr << "Invalid Expression" << std::endl;
                     exit(EXIT_FAILURE);
                 }
-                if (peak().has_value() || peak().value().type != TokenType::semi) {
+                if (peak().has_value() && peak().value().type == TokenType::semi) {
+                    consume();
+                } else {
                     std::cerr << "Invalid Expression" << std::endl;
                     exit(EXIT_FAILURE);
                 }
