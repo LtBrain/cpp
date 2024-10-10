@@ -70,7 +70,7 @@ public:
     }
 
 private:
-    [[nodiscard]] std::optional<char> peak() const 
+    [[nodiscard]] inline std::optional<char> peak() const 
     {
         if (m_index >= m_src.length()) {
             return {};
@@ -79,7 +79,7 @@ private:
         }
     }
 
-    char consume() {
+    inline char consume() {
         if (m_index >= m_src.length()) {
             throw std::out_of_range("Consume called on empty source");
         }
@@ -87,5 +87,5 @@ private:
     }
 
     const std::string m_src;
-    int m_index = 0;
+    size_t m_index = 0;
 };

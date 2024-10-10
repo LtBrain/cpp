@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "./tokenization.hpp"
+#include "./parser.hpp"
 
 // Modify the assembly generation to exclude the explicit 'section .text'
 std::string tokens_to_asm(const std::vector<Token>& tokens) {
