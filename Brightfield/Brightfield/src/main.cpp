@@ -8,29 +8,10 @@
 
 #include "./tokenization.hpp"
 #include "./parser.hpp"
+#include "./generation.hpp"
 
 // Modify the assembly generation to exclude the explicit 'section .text'
-std::string tokens_to_asm(const std::vector<Token>& tokens) {
-    std::stringstream output;
-    output << "global _start\n";  // No explicit 'section .text'
-    output << "_start:\n";
-    
-    for (int i = 0; i < tokens.size(); i++) {
-        const Token& token = tokens.at(i);
-        if (token.type == TokenType::exit) {
-            if (i + 1 < tokens.size() && tokens.at(i + 1).type == TokenType::int_lit) {
-                if (i + 2 < tokens.size() && tokens.at(i + 2).type == TokenType::semi) {
-                    output << "    mov rax, 60\n";  // sys_exit call
-                    output << "    mov rdi, " << tokens.at(i + 1).value.value() << "\n";  // Exit code
-                    output << "    syscall\n";
-                    i += 2;  // Skip the int_lit and semi tokens
-                }
-            }
-        }
-    }
-
-    return output.str();
-}
+std::string tokens_to_asm(const std::vector<Token>& tokens);
 
 int main(int argc, char* argv[]) {
     if (argc != 2) {

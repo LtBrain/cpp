@@ -7,6 +7,7 @@
 #include <iostream>
 #include <stdexcept>
 
+
 enum class TokenType { exit, int_lit, semi, eof };
 
 struct Token {
